@@ -1,5 +1,5 @@
 GFORTRAN module version '10' created from ./src/Rules/rules.f90
-MD5:f8c0d046ff3403008929036d0744b225 -- If you edit this, you'll get what you deserve.
+MD5:2782b01ac4be133f1af4f79de7b7da65 -- If you edit this, you'll get what you deserve.
 
 (() () () () () () () () () () () () () () () () () () () () () () () ()
 () () ())
@@ -26,28 +26,34 @@ UNKNOWN 0 0 SUBROUTINE IMPLICIT_PURE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 9 0 (
 12 'copy_board' 'rules' '' 1 ((PROCEDURE UNKNOWN-INTENT MODULE-PROC DECL
 UNKNOWN 0 0 SUBROUTINE IMPLICIT_PURE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 13 0
 (14 15) () 0 () () () 0 0)
-16 'copy_current_board' 'rules' '' 1 ((PROCEDURE UNKNOWN-INTENT
+16 'copy_current_board_left' 'rules' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 17
 0 (18) () 0 () () () 0 0)
 19 'copy_reverse_board' 'rules' '' 1 ((PROCEDURE UNKNOWN-INTENT
 MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE IMPLICIT_PURE) (UNKNOWN 0 0 0 0
 UNKNOWN ()) 20 0 (21 22) () 0 () () () 0 0)
-23 'copy_reverse_current_board' 'rules' '' 1 ((PROCEDURE UNKNOWN-INTENT
-MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 24
-0 (25) () 0 () () () 0 0)
-26 'disttocen' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
+23 'disttocen' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '3') () 0 () () () 0 0)
-27 'gamenotover' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
+24 'gamenotover' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '4') () 0 () () () 0 0)
-28 'gametied' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
+25 'gametied' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '3') () 0 () () () 0 0)
-29 'initmpos' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
+26 'init_random_seed' 'rules' '' 1 ((PROCEDURE UNKNOWN-INTENT
+MODULE-PROC DECL UNKNOWN 0 0 SUBROUTINE) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0
+0 () () 0 () () () 0 0)
+27 'initmpos' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '0') () 0 () () () 0 0)
-30 'leftcheat' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
+28 'isplaying' 'rules' '' 1 ((VARIABLE UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () ()
+() 0 0)
+29 'leftcheat' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (
+CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') () 0 () () () 0 0)
+30 'leftisplaying' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') () 0 () () () 0 0)
 31 'leftwon' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
@@ -77,21 +83,24 @@ CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '8') () 0 () () () 0 0)
 44 'rightcheat' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '2') () 0 () () () 0 0)
-45 'rightwon' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
+45 'rightisplaying' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '2') () 0 () () () 0 0)
-46 'rules' 'rules' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+46 'rightwon' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
+UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (
+CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '2') () 0 () () () 0 0)
+47 'rules' 'rules' '' 1 ((MODULE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
 UNKNOWN 0 0) (UNKNOWN 0 0 0 0 UNKNOWN ()) 0 0 () () 0 () () () 0 0)
-47 'verball' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
+48 'verball' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '3') () 0 () () () 0 0)
-48 'verbeachstate' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
+49 'verbeachstate' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '2') () 0 () () () 0 0)
-49 'verbstfu' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
+50 'verbstfu' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '0') () 0 () () () 0 0)
-50 'verbwinner' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
+51 'verbwinner' 'rules' '' 1 ((PARAMETER UNKNOWN-INTENT UNKNOWN-PROC
 UNKNOWN IMPLICIT-SAVE 0 0) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') () 0 () () () 0 0)
 5 'state' '' '' 4 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
@@ -130,16 +139,12 @@ INTEGER ()) 0 '3')) 0 () () () 0 0)
 DIMENSION DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (1 0 EXPLICIT (
 CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (INTEGER 4 0 0 0
 INTEGER ()) 0 '3')) 0 () () () 0 0)
-25 'state' '' '' 24 ((VARIABLE OUT UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
-DIMENSION DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () (1 0 EXPLICIT (
-CONSTANT (INTEGER 4 0 0 0 INTEGER ()) 0 '1') (CONSTANT (INTEGER 4 0 0 0
-INTEGER ()) 0 '3')) 0 () () () 0 0)
-38 'lstrategy' '' '' 37 ((PROCEDURE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+38 'lstrategy' '' '' 37 ((PROCEDURE UNKNOWN-INTENT DUMMY-PROC UNKNOWN
 UNKNOWN 0 0 EXTERNAL DUMMY FUNCTION) (INTEGER 4 0 0 0 INTEGER ()) 0 0 ()
-() 0 () () () 0 0)
-39 'rstrategy' '' '' 37 ((PROCEDURE UNKNOWN-INTENT UNKNOWN-PROC UNKNOWN
+() 38 () () () 0 0)
+39 'rstrategy' '' '' 37 ((PROCEDURE UNKNOWN-INTENT DUMMY-PROC UNKNOWN
 UNKNOWN 0 0 EXTERNAL DUMMY FUNCTION) (INTEGER 4 0 0 0 INTEGER ()) 0 0 ()
-() 0 () () () 0 0)
+() 39 () () () 0 0)
 40 'winner' '' '' 37 ((VARIABLE OUT UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
 DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 41 'verblvlin' '' '' 37 ((VARIABLE IN UNKNOWN-PROC UNKNOWN UNKNOWN 0 0
@@ -147,10 +152,10 @@ OPTIONAL DUMMY) (INTEGER 4 0 0 0 INTEGER ()) 0 0 () () 0 () () () 0 0)
 )
 
 ('bothcheat' 0 2 'checklegal' 0 3 'checkwin' 0 8 'copy_board' 0 12
-'copy_current_board' 0 16 'copy_reverse_board' 0 19
-'copy_reverse_current_board' 0 23 'disttocen' 0 26 'gamenotover' 0 27
-'gametied' 0 28 'initmpos' 0 29 'leftcheat' 0 30 'leftwon' 0 31
-'moneyinit' 0 32 'moneyinitl' 0 33 'moneyinitr' 0 34 'moveislegal' 0 35
-'play_game' 0 36 'print_cgstate' 0 42 'real_kind' 0 43 'rightcheat' 0 44
-'rightwon' 0 45 'rules' 0 46 'verball' 0 47 'verbeachstate' 0 48
-'verbstfu' 0 49 'verbwinner' 0 50)
+'copy_current_board_left' 0 16 'copy_reverse_board' 0 19 'disttocen' 0
+23 'gamenotover' 0 24 'gametied' 0 25 'init_random_seed' 0 26 'initmpos'
+0 27 'isplaying' 0 28 'leftcheat' 0 29 'leftisplaying' 0 30 'leftwon' 0
+31 'moneyinit' 0 32 'moneyinitl' 0 33 'moneyinitr' 0 34 'moveislegal' 0
+35 'play_game' 0 36 'print_cgstate' 0 42 'real_kind' 0 43 'rightcheat' 0
+44 'rightisplaying' 0 45 'rightwon' 0 46 'rules' 0 47 'verball' 0 48
+'verbeachstate' 0 49 'verbstfu' 0 50 'verbwinner' 0 51)

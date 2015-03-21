@@ -22,6 +22,10 @@ module rules
     integer                 , parameter :: verbeachstate = 2            ! verbosity print each move
     integer                 , parameter :: verball = 3                  ! verbosity print ALL
     
+    integer                 , parameter :: leftisplaying = 1            ! Left player is deciding
+    integer                 , parameter :: rightisplaying = 2           ! Right player is deciding
+    integer                             :: isplaying                    ! Who is playing ?
+    
     integer , dimension(3)              :: cgstate                      ! Current game state
                                                                         ! Game state format :   state(1) = Left player money
                                                                         !                       state(2) = Mercenaries position
@@ -64,25 +68,21 @@ contains
         rstate(1) = state(3)
         rstate(2) = - state(2)
         rstate(2) = state(1)
+        
     end subroutine copy_reverse_board
 
-! Copies current board
-    subroutine copy_current_board(state)
-    
+! Copies current board so that the player who is playing is on the left
+    subroutine copy_current_board_left(state)
+
         integer , dimension(3)  , intent(out)   :: state
-        
-        call copy_board(cgstate,state)
-    
-    end subroutine copy_current_board
-    
-! Copies current board and reverses board view
-    subroutine copy_reverse_current_board(state)
-    
-        integer , dimension(3)  , intent(out)   :: state
-        
-        call copy_reverse_board(cgstate,state)
-    
-    end subroutine copy_reverse_current_board 
+
+        if (isplaying == leftisplaying) then
+            call copy_board(cgstate,state)
+        else 
+            call copy_reverse_board(cgstate,state)
+        end if
+
+end subroutine copy_current_board_left
 
 ! Checks if somebody has won.
     subroutine checkwin(state,win)
@@ -92,9 +92,9 @@ contains
         
         if (abs(state(2)) .ge. disttocen) then
             if (state(2) > 0) then 
-                win = rightwon
-            else
                 win = leftwon
+            else
+                win = rightwon
             end if
         else if (state(1) .le. 0) then                                  ! Left player has no money left
             if ((state(3) - (state(2) + disttocen)) .ge. 0) then        ! Right player can invade left player
@@ -180,12 +180,12 @@ contains
     
         integer , external                  :: lstrategy                ! Left player strategy
         integer , external                  :: rstrategy                ! Right player strategy
-        integer , intent(out)               :: winner
+        integer , intent(out)               :: winner                   ! Who wins.
         integer , intent(in)    , optional  :: verblvlin                ! Input verbosity level.
         
         integer                             :: verblvl                  ! Effective verbosity level.
-        integer                             :: win                      ! Who wins ?
-        
+        integer , dimension(2)              :: money                    ! Collect money
+        integer                             :: legal                    ! Is move legal ?
         
         if (present(verblvlin)) then                                    ! Default verbose is shut the fuck up
             verblvl = verblvlin
@@ -193,10 +193,12 @@ contains
             verblvl = verbstfu
         end if
         
+        call init_random_seed()
+        
         call init_board(cgstate)
         
-        call checkwin(cgstate,win)
-        if (win .ne. gamenotover) then
+        call checkwin(cgstate,winner)
+        if (winner .ne. gamenotover) then
             print*, 'Wrong board initialisation'
             return
         end if
@@ -204,11 +206,74 @@ contains
         if (verblvl > verbstfu) then
             print*, 'New game initiated'
         end if
-        if (verblvl .ge. verbeachstate) then
-            call print_cgstate()
+
+        do while (winner == gamenotover)
+            
+            if (verblvl .ge. verbeachstate) then
+                call print_cgstate()
+            end if  
+            
+            isplaying = leftisplaying
+            money(1) = lstrategy()
+            isplaying = rightisplaying
+            money(2) = rstrategy()
+            
+            call checklegal(cgstate,money,legal)
+            
+            if (legal .ne. moveislegal) then
+                select case (legal)
+                case(leftcheat)
+                    if (verblvl .ge. verbwinner) then
+                        print*,'Left player cheated'
+                    end if
+                    winner = rightwon
+                case(rightcheat)
+                    if (verblvl .ge. verbwinner) then
+                        print*,'Right player cheated'
+                    end if
+                    winner = leftwon
+                case default
+                    winner = gametied
+                end select
+            else
+                
+                call exec_board_move(cgstate,money)
+                
+                call checkwin(cgstate,winner)
+                
+            end if
+            
+        end do
+        
+        if (verblvl .ge. verbwinner) then
+            select case(winner)
+            case(leftwon)
+                print*, 'Left player won'
+            case(rightwon)
+                print*, 'Right player won'
+            case(gametied)
+                print*, 'Game is over, nobody won'
+            end select
         end if
-    
+        
+        
     end subroutine play_game
-    
+
+    ! Subroutine to generate random seed based on clock timing
+    subroutine init_random_seed()
+
+        integer :: ii, nn, clock
+        integer, dimension(:), allocatable :: seed
+        
+        call random_seed(size = nn)
+        allocate(seed(nn))
+          
+        call system_clock(count=clock)
+          
+        seed = clock + 37 * (/ (ii - 1, ii = 1, nn) /)
+        call random_seed(put = seed)
+          
+        deallocate(seed)
+    end subroutine init_random_seed
     
 end module rules

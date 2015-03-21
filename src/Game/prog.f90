@@ -1,1 +1,1 @@
-call play_game(stupid,stupid,winner,verball)
+call play_game(human_noverb,unif_distrib,winner,verball)
