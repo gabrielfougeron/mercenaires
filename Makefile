@@ -6,8 +6,8 @@ OBJ = ./obj/
 BIN = ./bin/
 
 
-#~ FFLAGS=-fimplicit-none -Ofast
-FFLAGS=-fbounds-check -fbacktrace -fimplicit-none
+FFLAGS=-fimplicit-none -Ofast -march=native 
+#~ FFLAGS=-fbounds-check -fbacktrace -fimplicit-none
 
 all:
 	
@@ -17,4 +17,4 @@ all:
 	
 	$(FC) $(OBJ)game.o $(OBJ)strategies.o $(OBJ)rules.o $(FFLAGS) -o $(BIN)game.exe 
 	
-	$(BIN)game.exe
+	time $(BIN)game.exe

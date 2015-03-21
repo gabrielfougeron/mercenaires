@@ -107,4 +107,21 @@ contains
     
     end function unif_distrib
     
+! An example of deterministic play
+    function itsatrap() result(pay)
+    
+        integer                                         :: pay
+        integer , dimension(3)                          :: state
+        
+        call copy_current_board_left(state)
+        
+        select case(state(2))
+        case(1-disttocen)
+            pay = min(state(1),state(3))
+        case default
+            pay = 1
+        end select
+    
+    end function itsatrap
+    
 end module strategies

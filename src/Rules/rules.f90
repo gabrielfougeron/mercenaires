@@ -4,7 +4,7 @@ module rules
     integer                 , parameter :: moneyinit = 50               ! Initial money
     integer                 , parameter :: moneyinitl = moneyinit       ! Initial money for left player
     integer                 , parameter :: moneyinitr = moneyinit       ! Initial money for right player
-    integer                 , parameter :: disttocen = 3                ! Distance to center <=> number of displacement from center to invasion
+    integer                 , parameter :: disttocen = 1                ! Distance to center <=> number of displacement from center to invasion
     integer                 , parameter :: initmpos = 0                 ! Initial position of mercenaries
     
     integer                 , parameter :: leftwon = 1                  ! Game is over, left won
@@ -193,8 +193,6 @@ end subroutine copy_current_board_left
             verblvl = verbstfu
         end if
         
-        call init_random_seed()
-        
         call init_board(cgstate)
         
         call checkwin(cgstate,winner)
@@ -246,6 +244,9 @@ end subroutine copy_current_board_left
         end do
         
         if (verblvl .ge. verbwinner) then
+            if (verblvl .ge. verbeachstate) then
+                call print_cgstate()
+            end if  
             select case(winner)
             case(leftwon)
                 print*, 'Left player won'
