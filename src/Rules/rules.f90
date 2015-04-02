@@ -4,7 +4,7 @@ module rules
     integer                 , parameter :: moneyinit = 50               ! Initial money
     integer                 , parameter :: moneyinitl = moneyinit       ! Initial money for left player
     integer                 , parameter :: moneyinitr = moneyinit       ! Initial money for right player
-    integer                 , parameter :: disttocen = 1                ! Distance to center <=> number of displacement from center to invasion
+    integer                 , parameter :: disttocen = 3                ! Distance to center <=> number of displacement from center to invasion
     integer                 , parameter :: initmpos = 0                 ! Initial position of mercenaries
     
     integer                 , parameter :: leftwon = 1                  ! Game is over, left won
@@ -260,7 +260,7 @@ end subroutine copy_current_board_left
         
     end subroutine play_game
 
-    ! Subroutine to generate random seed based on clock timing
+! Subroutine to generate random seed based on clock timing
     subroutine init_random_seed()
 
         integer :: ii, nn, clock

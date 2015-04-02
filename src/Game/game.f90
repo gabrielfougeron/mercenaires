@@ -1,6 +1,5 @@
 program game
 
-    !$ use omp_lib
     use rules
     use strategies
 

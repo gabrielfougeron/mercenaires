@@ -92,12 +92,13 @@ contains
 ! Play according to uniform distribution
     function unif_distrib() result(pay)
     
-        integer                                         :: pay
-        integer , dimension(3)                          :: state
-        real(kind=real_kind)    , dimension(moneyinit)  :: pi       ! Discrete probability distribution
-        integer                                         :: i
+        integer                                             :: pay
+        integer , dimension(3)                              :: state
+        real(kind=real_kind)    , allocatable, dimension(:) :: pi       ! Discrete probability distribution
+        integer                                             :: i
         
         call copy_current_board_left(state)
+        allocate(pi(state(1)))
         
         do i=1,state(1)
             pi(i) = real(i,real_kind)/state(1)
@@ -123,5 +124,85 @@ contains
         end select
     
     end function itsatrap
+
+! A strategy that takes another strategy and pays 1 more.
+    function plusone() result(pay)
+    
+        integer                                         :: pay
+        integer , dimension(3)                          :: state
+        
+        pay = unif_distrib()
+        call copy_current_board_left(state)
+        
+        if (pay < state(1)) then
+            pay = pay + 1
+        end if
+        
+    
+    end function plusone
+    
+! A strategy that takes another strategy and pays 1 less.
+    function minusone() result(pay)
+    
+        integer                                         :: pay
+        integer , dimension(3)                          :: state
+        
+        pay = unif_distrib()
+        call copy_current_board_left(state)
+        
+        if ((pay > 1) .and. (state(1) > 1)) then
+            pay = pay - 1
+        end if
+        
+    
+    end function minusone
+
+! Finds a Nash equilibrium of a strategic form game with integer payoffs using the Lemke-Howson algorithm.
+    subroutine find1nash_lemhow(A,BT,m,n,x,y)
+        
+        real(kind=real_kind)    , dimension(m,n)    , intent(inout) :: A    ! Payoff matrix : m lines, n columns
+        real(kind=real_kind)    , dimension(n,m)    , intent(inout) :: BT   ! Payoff matrix : n lines, m columns
+        integer                                     , intent(in)    :: m    ! Number of lines of A = number of pure strategies of player X
+        integer                                     , intent(in)    :: n    ! Number of columns of A = number of pure strategies of player Y
+        real(kind=real_kind)    , dimension(m)      , intent(out)   :: x    ! Non scaled probabilities to play pure strategies for player X
+        real(kind=real_kind)    , dimension(n)      , intent(out)   :: y    ! Non scaled probabilities to play pure strategies for player Y
+        
+        integer                                                     :: k,l,i,j
+        real(kind=real_kind)    , dimension(n)                      :: s,C1
+        real(kind=real_kind)    , dimension(m)                      :: r,D1
+        real(kind=real_kind)    , dimension(n,m)                    :: C 
+        real(kind=real_kind)    , dimension(m,n)                    :: D 
+        real(kind=real_kind)                                        :: aoffset,btoffset
+        real(kind=real_kind)                                        :: p,q
+        integer                                     , parameter     :: ko = 1   ! Missing label, chosen to be 1 here.
+        
+        aoffset=0
+        do i=1,m
+            do j=1,n
+                p = A(i,j)
+                if (aoffset < p) then
+                    aoffset = p
+                end if
+            end do
+        end do
+
+        btoffset=0
+        do i=1,n
+            do j=1,m
+                p = BT(i,j)
+                if (btoffset < p) then
+                    btoffset = p
+                end if
+            end do
+        end do
+        
+        A = A + aoffset
+        BT = BT + btoffset
+        
+        k = 0
+        
+        
+        
+    end subroutine find1nash_lemhow
     
 end module strategies
