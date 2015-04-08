@@ -170,7 +170,7 @@ contains
         real(kind=real_kind)                        , intent(out)   :: v    ! Expected payoff for player X
         
         real(kind=real_kind)    , dimension(n+m,n+m)                :: mat
-        real(kind=real_kind)    , dimension(n+m)                    :: xs,ry,c
+        real(kind=real_kind)    , dimension(n+m)                    :: c
         integer                 , dimension(n+m)                    :: bas
         real(kind=real_kind)                                        :: moffset
         real(kind=real_kind)                                        :: p,q, piv
@@ -193,8 +193,6 @@ contains
                 end if
             end do
         end do
-        
-        moffset = 0
         
         do i=1,m
             do j=1,m
@@ -225,27 +223,18 @@ contains
             bas(i) = i
         end do
         
-        xs(1:m) = 0
-        xs(mp1:mpn) = 1
-        ry(1:m) = 1
-        ry(mp1:mpn) = 0
-        
         c = 1
         k = ko
         ! Treat picked up label until missing label is found
         mainloop:&
         do
 
-            print*,'k=',k,'ko=',ko
-            print*,"xs(k)=",xs(k)
-            print*,"ry(k)=",ry(k)
-            print*,"xs=",xs
-            print*,"ry=",ry
-            print*,"c=",c
-            print*,"mat="
-            do i=1,mpn
-                print*,mat(i,:)
-            end do
+!~             print*,'k=',k,'ko=',ko
+!~             print*,"c=",c
+!~             print*,"mat="
+!~             do i=1,mpn
+!~                 print*,mat(i,:)
+!~             end do
 !~             pause                    
 
 
@@ -253,21 +242,21 @@ contains
             if (k < mp1) then
                 ! Determines picked up label !
                 l = mp1
-                do while (mat(l,k) == 0_real_kind)
+                do while (mat(l,k) .le. 0_real_kind)
                     l = l + 1
                 end do
                 p = c(l) / mat(l,k)
                 do i=(l+1),mpn
-                    if (c(i) < (p*mat(i,k))) then
-                        p = c(i) / mat(i,k)
-                        l = i
+                    if (mat(i,k) > 0) then
+                        if (c(i) < (p*mat(i,k))) then
+                            p = c(i) / mat(i,k)
+                            l = i
+                        end if
                     end if
                 end do
-                print*,'min',l,p
+!~                 print*,'min',l,p
                 ! k enters the basis, l leaves the basis
-                xs(bas(l)) = 0
                 bas(l) = k
-                xs(k) = p
                 c(l) = p                                                
                 ! Pivoting arround l
                 p = mat(l,k)
@@ -295,21 +284,21 @@ contains
             else
                 ! Determines picked up label
                 l = 1
-                do while (mat(l,k) == 0_real_kind)
+                do while (mat(l,k) .le. 0_real_kind)
                     l = l + 1
                 end do
                 p = c(l) / mat(l,k)
                 do i=(l+1),m
-                    if (c(i) < (p*mat(i,k))) then
-                        p = c(i) / mat(i,k)
-                        l = i
+                    if (mat(i,k) > 0) then
+                        if (c(i) < (p*mat(i,k))) then
+                            p = c(i) / mat(i,k)
+                            l = i
+                        end if
                     end if
                 end do
-                print*,'min',l,p
-                ! k enters the basis, l leaves the basis
-                ry(bas(l)) = 0
+!~                 print*,'min',l,p
+                ! k enters the basis
                 bas(l) = k
-                ry(k) = p
                 c(l) = p                                                
                 ! Pivoting arround l
                 p = mat(l,k)
@@ -341,23 +330,6 @@ contains
             k = l
         end do mainloop
         
-        u = 0
-        v = 0
-!~         do i=1,m
-!~             u = u + xs(i)
-!~         end do
-!~         do i=mp1,mpn
-!~             v = v + ry(i)
-!~         end do
-!~         do i=1,m
-!~             x(i) = xs(i) / u
-!~         end do
-!~         do i=mp1,mpn
-!~             y(i-m) = ry(i) / v
-!~         end do
-!~         
-!~         u = u + moffset
-!~         v = v + moffset
         x = 0
         y = 0
         do i=mp1,mpn
@@ -383,12 +355,9 @@ contains
         x = x/u
         y = y/v
         
-        
+        u = u + moffset
+        v = v + moffset
 
-            print*,"xs=",xs
-            print*,"ry=",ry
-            print*,"c=",c
-            print*,bas
     end subroutine find1nash_lemhow_real
 
 
