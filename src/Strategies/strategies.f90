@@ -194,6 +194,8 @@ contains
             end do
         end do
         
+        moffset = moffset - 1
+        
         do i=1,m
             do j=1,m
                 if (i .ne. j) then
@@ -277,7 +279,7 @@ contains
             ! Determines picked up label
             l = 1
             do while (mat(l,k) .le. 0_real_kind)
-                l = l + 1
+                l = l + 1 
             end do
             p = c(l) / mat(l,k)
             do i=(l+1),m
@@ -345,13 +347,19 @@ contains
         do i=1,n
             v = v + y(i)
         end do
-        x = x/u
-        y = y/v
+
+        u = 1/u
+        v = 1/v
+
+        x = x*u
+        y = y*v
         
         u = u + moffset
         v = v + moffset
 
     end subroutine find1nash_lemhow_real
 
+! Finds a perfect subgame Nash equilibrium for the mercenaires game
+!~     subroutine find1_perfect_subnash(lmoney,rmoney)
 
 end module strategies
