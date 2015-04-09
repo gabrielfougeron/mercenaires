@@ -228,106 +228,99 @@ contains
         ! Treat picked up label until missing label is found
         mainloop:&
         do
-
-!~             print*,'k=',k,'ko=',ko
-!~             print*,"c=",c
-!~             print*,"mat="
-!~             do i=1,mpn
-!~                 print*,mat(i,:)
-!~             end do
-!~             pause                    
-
-
-!~             if (xs(k) == 0) then
-            if (k < mp1) then
-                ! Determines picked up label !
-                l = mp1
-                do while (mat(l,k) .le. 0_real_kind)
-                    l = l + 1
-                end do
-                p = c(l) / mat(l,k)
-                do i=(l+1),mpn
-                    if (mat(i,k) > 0) then
-                        if (c(i) < (p*mat(i,k))) then
-                            p = c(i) / mat(i,k)
-                            l = i
-                        end if
+            ! Determines picked up label !
+            l = mp1
+            do while (mat(l,k) .le. 0_real_kind)
+                l = l + 1
+            end do
+            p = c(l) / mat(l,k)
+            do i=(l+1),mpn
+                if (mat(i,k) > 0) then
+                    if (c(i) < (p*mat(i,k))) then
+                        p = c(i) / mat(i,k)
+                        l = i
                     end if
+                end if
+            end do
+            c(l) = p                                                
+            ! Pivoting arround l
+            p = mat(l,k)
+            do i=1,k-1
+                mat(l,i) = mat(l,i) / p
+            end do
+            mat(l,k) = 1
+            do i=k+1,mpn
+                mat(l,i) = mat(l,i) / p
+            end do
+            do i=mp1,l-1
+                p = mat(i,k)
+                do j=1,mpn
+                    mat(i,j) = mat(i,j) - p * mat(l,j)
+                end do 
+                c(i) = c(i) - p*c(l)
+            end do
+            do i=l+1,mpn
+                p = mat(i,k)
+                do j=1,mpn
+                    mat(i,j) = mat(i,j) - p * mat(l,j)
                 end do
-!~                 print*,'min',l,p
-                ! k enters the basis, l leaves the basis
-                bas(l) = k
-                c(l) = p                                                
-                ! Pivoting arround l
-                p = mat(l,k)
-                do i=1,k-1
-                    mat(l,i) = mat(l,i) / p
-                end do
-                mat(l,k) = 1
-                do i=k+1,mpn
-                    mat(l,i) = mat(l,i) / p
-                end do
-                do i=mp1,l-1
-                    p = mat(i,k)
-                    do j=1,mpn
-                        mat(i,j) = mat(i,j) - p * mat(l,j)
-                    end do 
-                    c(i) = c(i) - p*c(l)
-                end do
-                do i=l+1,mpn
-                    p = mat(i,k)
-                    do j=1,mpn
-                        mat(i,j) = mat(i,j) - p * mat(l,j)
-                    end do
-                    c(i) = c(i) - p*c(l)                    
-                end do
-            else
-                ! Determines picked up label
-                l = 1
-                do while (mat(l,k) .le. 0_real_kind)
-                    l = l + 1
-                end do
-                p = c(l) / mat(l,k)
-                do i=(l+1),m
-                    if (mat(i,k) > 0) then
-                        if (c(i) < (p*mat(i,k))) then
-                            p = c(i) / mat(i,k)
-                            l = i
-                        end if
-                    end if
-                end do
-!~                 print*,'min',l,p
-                ! k enters the basis
-                bas(l) = k
-                c(l) = p                                                
-                ! Pivoting arround l
-                p = mat(l,k)
-                do i=1,k-1
-                    mat(l,i) = mat(l,i) / p
-                end do
-                mat(l,k) = 1
-                do i=k+1,mpn
-                    mat(l,i) = mat(l,i) / p
-                end do
-                do i=1,l-1
-                    p = mat(i,k)
-                    do j=1,mpn
-                        mat(i,j) = mat(i,j) - p * mat(l,j)
-                    end do
-                    c(i) = c(i) - p*c(l)
-                end do
-                do i=l+1,m
-                    p = mat(i,k)
-                    do j=1,mpn
-                        mat(i,j) = mat(i,j) - p * mat(l,j)
-                    end do
-                    c(i) = c(i) - p*c(l)
-                end do
-            end if
-            if (l == ko) then
+                c(i) = c(i) - p*c(l)                    
+            end do
+
+            i = bas(l)
+            bas(l) = k  
+            k = i
+            if (k == ko) then
                 exit mainloop
-            end if            
-            k = l
+            end if         
+
+            ! Determines picked up label
+            l = 1
+            do while (mat(l,k) .le. 0_real_kind)
+                l = l + 1
+            end do
+            p = c(l) / mat(l,k)
+            do i=(l+1),m
+                if (mat(i,k) > 0) then
+                    if (c(i) < (p*mat(i,k))) then
+                        p = c(i) / mat(i,k)
+                        l = i
+                    end if
+                end if
+            end do
+            c(l) = p                                                
+            ! Pivoting arround l
+            p = mat(l,k)
+            do i=1,k-1
+                mat(l,i) = mat(l,i) / p
+            end do
+            mat(l,k) = 1
+            do i=k+1,mpn
+                mat(l,i) = mat(l,i) / p
+            end do
+            do i=1,l-1
+                p = mat(i,k)
+                do j=1,mpn
+                    mat(i,j) = mat(i,j) - p * mat(l,j)
+                end do
+                c(i) = c(i) - p*c(l)
+            end do
+            do i=l+1,m
+                p = mat(i,k)
+                do j=1,mpn
+                    mat(i,j) = mat(i,j) - p * mat(l,j)
+                end do
+                c(i) = c(i) - p*c(l)
+            end do
+
+
+            ! k enters the basis, l leaves the basis
+            i = bas(l)
+            bas(l) = k  
+            k = i
+            if (k == ko) then
+                exit mainloop
+            end if         
         end do mainloop
         
         x = 0
