@@ -1,6 +1,9 @@
 module strategies
     
     use rules
+
+    real(kind=real_kind)    , dimension(:,:,:,:)    , allocatable   ::  behavstrat1
+    real(kind=real_kind)    , dimension(:,:,:,:)    , allocatable   ::  behavstrat2
     
 contains
 
@@ -360,6 +363,135 @@ contains
     end subroutine find1nash_lemhow_real
 
 ! Finds a perfect subgame Nash equilibrium for the mercenaires game
-!~     subroutine find1_perfect_subnash(lmoney,rmoney)
+    subroutine find1_perfect_subnash(moneymax,payofffun,behavstrat)
+    
+        integer                                                         , intent(in)    :: moneymax     ! Strategies are generated for all states of money < moneymax
+        real(kind=real_kind)    , external                                              :: payofffun    ! payoff function for end states
+        real(kind=real_kind)    , dimension(:,:,:,:)    , allocatable   , intent(out)   :: behavstrat   ! behavstrat(lmoney,state,rmoney,(payoff,probas))
+        
+        integer                                                 :: rmon,lmon,mposnow    ! Available money and position of mercenaries
+        integer                                                 :: srmon,slmon          ! Spent money
+        integer                                                 :: crmon,clmon,mpos     ! Leftover money and subsequent position of mercenaries
+        integer                                                 :: i,j,k,l
+        real(kind=real_kind)    , dimension(moneymax,moneymax)  :: lpayoff,rpayoff
+        real(kind=real_kind)                                    :: p,q
+        
+        
+        if (allocated(behavstrat)) then
+            deallocate(behavstrat)
+        end if
+        
+        allocate(behavstrat(1:moneymax,(-disttocen+1):(disttocen-1),1:moneymax,0:moneymax))
+        
+        do lmon=1,moneymax
+            do rmon=1,lmon
+                do mposnow=(1-disttocen),(disttocen-1)
+                    print*,lmon,mposnow,rmon
+                    ! (lmon,mposnow,rmon) is the current game state.
+                    ! List available plays and perform payoff matrix assembly
+                    do slmon=1,lmon
+                        do srmon=1,rmon
+                            clmon = lmon - slmon
+                            crmon = rmon - srmon
+                            if (slmon == srmon) then
+                                mpos = mposnow
+                            else if (slmon > srmon) then
+                                mpos = mposnow + 1
+                            else
+                                mpos = mposnow - 1
+                            end if
+                            ! (clmon,mpos,crmon) is the game state if (slmon,srmon) is played
+                            if ((clmon == 0) .or. (crmon == 0) .or. (abs(mpos) == disttocen) )then
+                                p = payofffun(clmon,mpos ,crmon)
+                                q = payofffun(crmon,-mpos,clmon)
+                            else
+                                p = behavstrat(clmon,mpos,crmon,0)
+                                q = behavstrat(crmon,-mpos,clmon,0)     ! The situation is reversed.
+                            end if
+                            lpayoff(slmon,srmon) = p
+                            rpayoff(slmon,srmon) = q
+                        end do
+                    end do
+                    
+                    call find1nash_lemhow_real(             &
+                     rpayoff        ,lpayoff                &
+                    ,lmon           ,rmon                   &
+                    ,behavstrat(lmon,mposnow ,rmon,1:lmon)  &
+                    ,behavstrat(lmon,mposnow ,rmon,0)       &
+                    ,behavstrat(rmon,-mposnow,lmon,1:rmon)  &
+                    ,behavstrat(rmon,-mposnow,lmon,0)       )
+                    
+                end do
+            end do
+        end do
+        
+    
+    end subroutine find1_perfect_subnash
 
+! Natural end payoff function
+    function natendpayoff(lmon,mpos,rmon) result (p)
+        
+        integer , intent(in)    :: lmon     ! Left player money
+        integer , intent(in)    :: mpos     ! Position of mercenaries as seen by left player
+        integer , intent(in)    :: rmon     ! Right player money
+        real(kind=real_kind)    :: p        ! Payoff
+        
+        if (mpos == disttocen) then
+            p = 1
+        else if (mpos == -disttocen) then
+            p = -1
+        else if (lmon == 0) then                                        ! Left player has no money left
+            if ((rmon - (mpos + disttocen)) .ge. 0) then               ! Right payer can invade left player
+                p = -1
+            else
+                p = 0
+            end if
+        else if (rmon == 0) then                                        ! Left player has no money left        
+            if ((lmon + mpos - disttocen) .ge. 0) then                 ! Right payer can invade left player
+                p = 1
+            else
+                p = 0
+            end if
+        else
+            print*,'Game is not over yet, I cannot define an end payoff'        
+            p = 0
+        end if
+        
+    end function natendpayoff
+    
+! Augmented end payoff function
+    function augendpayoff(lmon,mpos,rmon) result (p)
+        
+        integer , intent(in)    :: lmon     ! Left player money
+        integer , intent(in)    :: mpos     ! Position of mercenaries as seen by left player
+        integer , intent(in)    :: rmon     ! Right player money
+        real(kind=real_kind)    :: p        ! Payoff
+        
+        integer                 :: monend
+        
+        if (mpos == disttocen) then
+            p = 1 + real(lmon, kind = real_kind) / real(moneyinit, kind = real_kind)
+        else if (mpos == -disttocen) then
+            p = - ( 1 + real(rmon, kind = real_kind) / real(moneyinit, kind = real_kind))
+        else if (lmon == 0) then                                        ! Left player has no money left
+            monend = (rmon - (mpos + disttocen))
+            if (monend .ge. 0) then                                     ! Right payer can invade left player
+                p = - ( 1 + real(monend, kind = real_kind) / real(moneyinit, kind = real_kind))
+            else
+                p = 0
+            end if
+        else if (rmon == 0) then                                        ! Left player has no money left 
+            monend = (lmon + mpos - disttocen)
+            if (monend .ge. 0) then                                     ! Right payer can invade left player
+                p = 1 + real(monend, kind = real_kind) / real(moneyinit, kind = real_kind)
+            else
+                p = 0
+            end if
+        else
+            print*,'Game is not over yet, I cannot define an end payoff'        
+            p = 0
+        end if
+        
+    end function augendpayoff
+    
 end module strategies

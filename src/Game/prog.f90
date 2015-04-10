@@ -154,3 +154,4 @@ print*,'v=',v
 
 
 
+call find1_perfect_subnash(moneyinit,natendpayoff,behavstrat1)
