@@ -198,7 +198,8 @@ contains
             end do
         end do
         
-        moffset = moffset - 1
+!~         moffset = moffset - 1
+        moffset =  - 2
         
         do i=1,m
             do j=1,m
@@ -346,12 +347,6 @@ contains
                 x(bas(i)) = c(i)
             end if
         end do
-        do i=1,m
-            if (bas(i) > m) then
-                y(bas(i)-m) = c(i)
-            end if
-        end do
-            
         
         u = 0
         do i=1,m
@@ -361,6 +356,11 @@ contains
         x = x*u
         u = u + moffset
         
+        do i=1,m
+            if (bas(i) > m) then
+                y(bas(i)-m) = c(i)
+            end if
+        end do
         v = 0
         do i=1,n
             v = v + y(i)
@@ -368,6 +368,7 @@ contains
         v = 1/v
         y = y*v
         v = v + moffset
+
 
     end subroutine find1nash_lemhow_real
 
@@ -418,35 +419,29 @@ contains
                             end if
                             lpayoff(slmon,srmon) = p
                             rpayoff(slmon,srmon) = q
+!~                             rpayoff(slmon,srmon) = -p
                         end do
                     end do
-!~                     print*,'lpayoff = '
-!~                     do i=1, lmon
-!~                         print*,lpayoff(i,1:rmon)
-!~                     end do
-!~                     print*,'rpayoff = '
-!~                     do i=1, rmon
-!~                         print*,lpayoff(i,1:rmon)
-!~                     end do
+                    
+                    print*,lmon,mposnow,rmon
+                    print*,'B lpayoff = '
+                    do i=1, lmon
+                        print*,lpayoff(i,1:rmon)
+                    end do
+                    print*,'A rpayoff = '
+                    do i=1, lmon
+                        print*,rpayoff(i,1:rmon)
+                    end do
                                     
                     call find1nash_lemhow_real(             &
-                     rpayoff        ,lpayoff                &
+                     rpayoff(1:lmon,1:rmon)                 &
+                    ,lpayoff(1:lmon,1:rmon)                 &
                     ,lmon           ,rmon                   &
                     ,behavstrat(lmon,mposnow ,rmon,1:lmon)  &
                     ,behavstrat(lmon,mposnow ,rmon,0)       &
                     ,behavstrat(rmon,-mposnow,lmon,1:rmon)  &
                     ,behavstrat(rmon,-mposnow,lmon,0)       )
                     
-                    print*,lmon,mposnow,rmon
-!~                     print*,'payoffl', 'l = line player'
-!~                     do i=1,lmon
-!~                         print*,lpayoff(i,1:rmon)
-!~                     end do
-!~                     print*,'payoffr', 'r = column player'
-!~                     do i=1,lmon
-!~                         print*,rpayoff(i,1:rmon)
-!~                     end do
-
                     print*,'stratl',behavstrat(lmon,mposnow ,rmon,0:lmon)
                     print*,'stratr',behavstrat(rmon,-mposnow,lmon,0:rmon)
 !~                     read*,
