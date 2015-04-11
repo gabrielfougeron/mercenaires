@@ -161,7 +161,8 @@ contains
     end function minusone
 
 ! Finds a Nash equilibrium of a strategic form game with real payoffs using the Lemke-Howson algorithm.
-    subroutine find1nash_lemhow_real(A,B,m,n,x,u,y,v)
+!~     subroutine find1nash_lemhow_real(A,B,m,n,x,u,y,v)
+    subroutine find1nash_lemhow_real(B,A,m,n,x,v,y,u)
         
         real(kind=real_kind)    , dimension(m,n)    , intent(in)    :: A    ! Payoff matrix : m lines, n columns
         real(kind=real_kind)    , dimension(m,n)    , intent(in)    :: B    ! Payoff matrix : n lines, m columns
@@ -233,6 +234,16 @@ contains
         ! Treat picked up label until missing label is found
         mainloop:&
         do
+
+!~             print*,'k=',k
+!~             print*,'bas=',bas
+!~             print*,'mat = '
+!~             do i=1,mpn
+!~                 print*,mat(i,:)
+!~             end do
+            
+
+
             ! Determines picked up label !
             l = mp1
             do while (mat(l,k) .le. 0_real_kind)
@@ -343,21 +354,19 @@ contains
             
         
         u = 0
-        v = 0
         do i=1,m
             u = u + x(i)
         end do
+        u = 1/u
+        x = x*u
+        u = u + moffset
+        
+        v = 0
         do i=1,n
             v = v + y(i)
         end do
-
-        u = 1/u
         v = 1/v
-
-        x = x*u
         y = y*v
-        
-        u = u + moffset
         v = v + moffset
 
     end subroutine find1nash_lemhow_real
@@ -386,7 +395,6 @@ contains
         do lmon=1,moneymax
             do rmon=1,lmon
                 do mposnow=(1-disttocen),(disttocen-1)
-                    print*,lmon,mposnow,rmon
                     ! (lmon,mposnow,rmon) is the current game state.
                     ! List available plays and perform payoff matrix assembly
                     do slmon=1,lmon
@@ -403,16 +411,24 @@ contains
                             ! (clmon,mpos,crmon) is the game state if (slmon,srmon) is played
                             if ((clmon == 0) .or. (crmon == 0) .or. (abs(mpos) == disttocen) )then
                                 p = payofffun(clmon,mpos ,crmon)
-                                q = payofffun(crmon,-mpos,clmon)
+                                q = payofffun(crmon,-mpos,clmon)        ! The situation is reversed.
                             else
-                                p = behavstrat(clmon,mpos,crmon,0)
+                                p = behavstrat(clmon,mpos ,crmon,0)
                                 q = behavstrat(crmon,-mpos,clmon,0)     ! The situation is reversed.
                             end if
                             lpayoff(slmon,srmon) = p
                             rpayoff(slmon,srmon) = q
                         end do
                     end do
-                    
+!~                     print*,'lpayoff = '
+!~                     do i=1, lmon
+!~                         print*,lpayoff(i,1:rmon)
+!~                     end do
+!~                     print*,'rpayoff = '
+!~                     do i=1, rmon
+!~                         print*,lpayoff(i,1:rmon)
+!~                     end do
+                                    
                     call find1nash_lemhow_real(             &
                      rpayoff        ,lpayoff                &
                     ,lmon           ,rmon                   &
@@ -420,6 +436,20 @@ contains
                     ,behavstrat(lmon,mposnow ,rmon,0)       &
                     ,behavstrat(rmon,-mposnow,lmon,1:rmon)  &
                     ,behavstrat(rmon,-mposnow,lmon,0)       )
+                    
+                    print*,lmon,mposnow,rmon
+!~                     print*,'payoffl', 'l = line player'
+!~                     do i=1,lmon
+!~                         print*,lpayoff(i,1:rmon)
+!~                     end do
+!~                     print*,'payoffr', 'r = column player'
+!~                     do i=1,lmon
+!~                         print*,rpayoff(i,1:rmon)
+!~                     end do
+
+                    print*,'stratl',behavstrat(lmon,mposnow ,rmon,0:lmon)
+                    print*,'stratr',behavstrat(rmon,-mposnow,lmon,0:rmon)
+!~                     read*,
                     
                 end do
             end do
