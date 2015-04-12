@@ -44,7 +44,7 @@ print*,'B'
 do i=1,m
     print*,B(i,:)
 end do
-call find1nash_lemhow_real(A,B,m,n,x,u,y,v)
+call find1nash_lemhow_real2(A,B,m,n,x,u,y,v)
 
 print*,' '
 print*,'x=',x
