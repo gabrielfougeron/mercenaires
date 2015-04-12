@@ -6,8 +6,8 @@ OBJ = ./obj/
 BIN = ./bin/
 
 
-#~ FFLAGS=-fimplicit-none -Ofast -march=native 
-FFLAGS=-fbounds-check -fbacktrace -fimplicit-none
+FFLAGS=-fimplicit-none -Ofast -march=native 
+#~ FFLAGS=-fbounds-check -fbacktrace -fimplicit-none
 
 all:
 	

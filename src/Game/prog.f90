@@ -53,7 +53,7 @@ print*,'y=',y
 print*,'v=',v
 
 
-!~ 
-call find1_perfect_subnash(moneyinit,natendpayoff,behavstrat1)
 
-print*,behavstrat1(moneyinit,0,moneyinit,:)
+call find1_perfect_subnash(moneyinit,natendpayoff,behavstrat1)
+call find1_perfect_subnash(moneyinit,augendpayoff,behavstrat2)
+

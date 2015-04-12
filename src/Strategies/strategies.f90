@@ -346,6 +346,12 @@ contains
                 x(bas(i)) = c(i)
             end if
         end do
+        do i=1,m
+            if (bas(i) > m) then
+                y(bas(i)-m) = c(i)
+            end if
+        end do
+        
         
         u = 0
         do i=1,m
@@ -353,21 +359,27 @@ contains
         end do
         u = 1/u
         x = x*u
-        u = u + moffset
-        
-        do i=1,m
-            if (bas(i) > m) then
-                y(bas(i)-m) = c(i)
-            end if
-        end do
+
         v = 0
         do i=1,n
             v = v + y(i)
         end do
         v = 1/v
         y = y*v
-        v = v + moffset
 
+        u=0
+        do i=1,m
+            do j=1,n
+                u = u + x(i)*B(i,j)*y(j)
+            end do
+        end do
+        
+        v=0
+        do i=1,m
+            do j=1,n
+                v = v + x(i)*A(i,j)*y(j)
+            end do
+        end do
 
     end subroutine find1nash_lemhow_real
 
@@ -388,6 +400,7 @@ contains
         integer                 , dimension(n+m)                    :: bas
         real(kind=real_kind)                                        :: moffset
         real(kind=real_kind)                                        :: p,q, piv
+        real(kind=real_kind)                        , parameter     :: eps = 1d-11
         integer                                     , parameter     :: ko =  1  ! Missing label.
         integer                                                     :: k,l,i,j
         integer                                                     :: mpn,mp1,mp2
@@ -457,20 +470,27 @@ contains
 
             ! Determines picked up label !
             l = mp1
-            do while (mat(l,k) .le. 0_real_kind)
+            do while (mat(l,k) .le. eps)
                 l = l + 1
             end do
-            p = c(l) / mat(l,k)
             do i=(l+1),mpn
-                if (mat(i,k) > 0) then
-                    if (c(i) < (p*mat(i,k))) then
-                        p = c(i) / mat(i,k)
-                        l = i
+                if (mat(i,k) > eps) then
+                    p = mat(i,k)*c(l) - mat(l,k)*c(i)
+                    if (p > 0) then
+                        if (p < eps) then
+                            if (bas(i) < bas(l)) then
+                                l=i
+                            end if
+                        else
+                            l=i
+                        end if
                     end if
                 end if
             end do
-            c(l) = p                                                
+
+
             ! Pivoting arround l
+            c(l) = c(l) / mat(l,k)
             p = mat(l,k)
             do i=1,k-1
                 mat(l,i) = mat(l,i) / p
@@ -503,20 +523,26 @@ contains
 
             ! Determines picked up label
             l = 1
-            do while (mat(l,k) .le. 0_real_kind)
-                l = l + 1 
+            do while (mat(l,k) .le. eps)
+                l = l + 1
             end do
-            p = c(l) / mat(l,k)
             do i=(l+1),m
-                if (mat(i,k) > 0) then
-                    if (c(i) < (p*mat(i,k))) then
-                        p = c(i) / mat(i,k)
-                        l = i
+                if (mat(i,k) > eps) then
+                    p = mat(i,k)*c(l) - mat(l,k)*c(i)
+                    if (p > 0) then
+                        if (p < eps) then
+                            if (bas(i) < bas(l)) then
+                                l=i
+                            end if
+                        else
+                            l=i
+                        end if
                     end if
                 end if
             end do
-            c(l) = p                                                
+            
             ! Pivoting arround l
+            c(l) = c(l) / mat(l,k)
             p = mat(l,k)
             do i=1,k-1
                 mat(l,i) = mat(l,i) / p
@@ -646,14 +672,14 @@ contains
                     end do
                     
                     print*,lmon,mposnow,rmon
-                    print*,'B lpayoff = '
-                    do i=1, lmon
-                        print*,lpayoff(i,1:rmon)
-                    end do
-                    print*,'A rpayoff = '
-                    do i=1, lmon
-                        print*,rpayoff(i,1:rmon)
-                    end do
+!~                     print*,'B lpayoff = '
+!~                     do i=1, lmon
+!~                         print*,lpayoff(i,1:rmon)
+!~                     end do
+!~                     print*,'A rpayoff = '
+!~                     do i=1, lmon
+!~                         print*,rpayoff(i,1:rmon)
+!~                     end do
                                     
                     call find1nash_lemhow_real2(            &
                      rpayoff(1:lmon,1:rmon)                 &
@@ -664,8 +690,8 @@ contains
                     ,behavstrat(rmon,-mposnow,lmon,1:rmon)  &
                     ,behavstrat(rmon,-mposnow,lmon,0)       )
                     
-                    print*,'stratl',behavstrat(lmon,mposnow ,rmon,0:lmon)
-                    print*,'stratr',behavstrat(rmon,-mposnow,lmon,0:rmon)
+!~                     print*,'stratl',behavstrat(lmon,mposnow ,rmon,0:lmon)
+!~                     print*,'stratr',behavstrat(rmon,-mposnow,lmon,0:rmon)
 !~                     read*,
                     
                 end do
