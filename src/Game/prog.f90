@@ -6,10 +6,6 @@ call find1_perfect_subnash(moneyinit,augendpayoff,behavstrat2)
 call sumproba_behavestrat(moneyinit,behavstrat1)
 call sumproba_behavestrat(moneyinit,behavstrat2)
 
-print*,'Let the game begin'
-
-print*,behavstrat1(50,0,50,:)
-
 call play_game(human,behav_distrib1,winner,verball)
 
 !~ ngames = 10**7

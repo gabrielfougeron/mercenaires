@@ -448,7 +448,7 @@ contains
                         end do
                     end do
                     
-                    print*,lmon,mposnow,rmon
+!~                     print*,lmon,mposnow,rmon
 !~                     print*,'B lpayoff = '
 !~                     do i=1, lmon
 !~                         print*,lpayoff(i,1:rmon)
@@ -484,9 +484,7 @@ contains
         integer                                             :: pay
         integer , dimension(3)                              :: state
         
-        call copy_current_board_left(state)
-
-        print*,1,state        
+        call copy_current_board_left(state)     
         call play_distrib(behavstrat1(state(1),state(2),state(3),1:state(1))    &
                             ,state(1),pay)
     
@@ -498,8 +496,6 @@ contains
         integer , dimension(3)                              :: state
         
         call copy_current_board_left(state)
-        
-        print*,2,state
         call play_distrib(behavstrat2(state(1),state(2),state(3),1:state(1))    &
                             ,state(1),pay)
     

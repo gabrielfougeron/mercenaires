@@ -67,15 +67,15 @@ contains
         
         rstate(1) = state(3)
         rstate(2) = - state(2)
-        rstate(2) = state(1)
-        
+        rstate(3) = state(1)
+
     end subroutine copy_reverse_board
 
 ! Copies current board so that the player who is playing is on the left
     subroutine copy_current_board_left(state)
 
         integer , dimension(3)  , intent(out)   :: state
-
+        
         if (isplaying == leftisplaying) then
             call copy_board(cgstate,state)
         else 
@@ -193,7 +193,11 @@ end subroutine copy_current_board_left
             verblvl = verbstfu
         end if
         
+        print*,cgstate
+        
         call init_board(cgstate)
+
+        print*,cgstate
         
         call checkwin(cgstate,winner)
         if (winner .ne. gamenotover) then
@@ -213,6 +217,7 @@ end subroutine copy_current_board_left
             
             isplaying = leftisplaying
             money(1) = lstrategy()
+
             isplaying = rightisplaying
             money(2) = rstrategy()
             
