@@ -25,7 +25,7 @@ program game
         do i=1,ngames
         
             call play_game(lstrategy,rstrategy,winner)
-        
+
             select case(winner)
             case(leftwon)
                 winnertable(1) = winnertable(1) + 1

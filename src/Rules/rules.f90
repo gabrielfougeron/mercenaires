@@ -21,6 +21,7 @@ module rules
     integer                 , parameter :: verbwinner = 1               ! verbosity print only winner
     integer                 , parameter :: verbeachstate = 2            ! verbosity print each move
     integer                 , parameter :: verball = 3                  ! verbosity print ALL
+    integer                 , parameter :: verballpause = 4             ! verbosity print ALL + pause at each end of game
     
     integer                 , parameter :: leftisplaying = 1            ! Left player is deciding
     integer                 , parameter :: rightisplaying = 2           ! Right player is deciding
@@ -186,18 +187,16 @@ end subroutine copy_current_board_left
         integer                             :: verblvl                  ! Effective verbosity level.
         integer , dimension(2)              :: money                    ! Collect money
         integer                             :: legal                    ! Is move legal ?
-        
-        if (present(verblvlin)) then                                    ! Default verbose is shut the fuck up
+        integer                 , parameter :: verbdef = verbstfu       ! Default verbosity level.
+!~         integer                 , parameter :: verbdef = verballpause       ! Default verbosity level.
+
+        if (present(verblvlin)) then 
             verblvl = verblvlin
         else
-            verblvl = verbstfu
+            verblvl = verbdef
         end if
         
-        print*,cgstate
-        
         call init_board(cgstate)
-
-        print*,cgstate
         
         call checkwin(cgstate,winner)
         if (winner .ne. gamenotover) then
@@ -262,6 +261,10 @@ end subroutine copy_current_board_left
             end select
         end if
         
+        if (verblvl .ge. verballpause) then
+            read*,
+            call system("clear")
+        end if
         
     end subroutine play_game
 
