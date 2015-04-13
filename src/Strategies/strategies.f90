@@ -134,7 +134,7 @@ contains
         integer                                         :: pay
         integer , dimension(3)                          :: state
         
-        pay = unif_distrib()
+        pay = behav_distrib1()
         call copy_current_board_left(state)
         
         if (pay < state(1)) then
@@ -150,7 +150,7 @@ contains
         integer                                         :: pay
         integer , dimension(3)                          :: state
         
-        pay = unif_distrib()
+        pay = behav_distrib1()
         call copy_current_board_left(state)
         
         if ((pay > 1) .and. (state(1) > 1)) then
@@ -177,7 +177,7 @@ contains
         integer                 , dimension(n+m)                    :: bas
         real(kind=real_kind)                                        :: moffset
         real(kind=real_kind)                                        :: p,q, piv
-        real(kind=real_kind)                        , parameter     :: eps = 1d-10
+        real(kind=real_kind)                        , parameter     :: eps = 1d-11
         integer                                     , parameter     :: ko =  1  ! Missing label.
         integer                                                     :: k,l,i,j
         integer                                                     :: mpn,mp1,mp2
@@ -380,6 +380,32 @@ contains
         end do
         v = 1/v
         y = y*v
+
+        do i=1,m
+            if (x(i) < eps) then
+                x(i) = 0
+            end if
+        end do
+        do i=1,n
+            if (y(i) < eps) then
+                y(i) = 0
+            end if
+        end do
+
+        u = 0
+        do i=1,m
+            u = u + x(i)
+        end do
+        u = 1/u
+        x = x*u
+
+        v = 0
+        do i=1,n
+            v = v + y(i)
+        end do
+        v = 1/v
+        y = y*v
+
 
         u=0
         do i=1,m
